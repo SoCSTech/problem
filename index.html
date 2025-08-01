@@ -63,17 +63,46 @@
     </p>
     <a href="http://lncn.ac/labsupport">Click here if you aren't redirected</a>
     <script>
-      // Go to forms fill in the field where you are collecting the desk identifier and then get a prefilled link,
-      // Once you have got you link paste it below and then take out the sample data but leave the `=`
-      const formUrl =
-        "https://forms.office.com/Pages/ResponsePage.aspx?id=xEculd4FgkKDr19LRrFijwTvs3m7GDFAsDnE7dKUJVdUQlRMU1Y2WVEzVlg1V1MwSVdYS1g1SEVJNiQlQCN0PWcu&r10b7c02a53504f6fa7a940eea572dfc8=";
+      // Get the value of "desk" in eg "https://socstech.github.io/problem?desk=some-desk"
+      // and redirect them to the form with it filled in
       const params = new Proxy(new URLSearchParams(window.location.search), {
         get: (searchParams, prop) => searchParams.get(prop),
       });
 
-      // Get the value of "desk" in eg "https://socstech.github.io/problem?desk=some-desk"
-      // and redirect them to the form with it filled in
-      let desk = params.desk;
+      // Go to forms fill in the field where you are collecting the desk identifier and then get a prefilled link,
+      // Once you have got you link, break it down and paste it below
+      // You should look at how it is structured
+      const formId =
+        "xEculd4FgkKDr19LRrFijwTvs3m7GDFAsDnE7dKUJVdUQlRMU1Y2WVEzVlg1V1MwSVdYS1g1SEVJNiQlQCN0PWcu";
+      const deskIdField = "r10b7c02a53504f6fa7a940eea572dfc8";
+      const roomField = "r6914b183b2b6448e9024cbb8c8ee59dd";
+
+      // Rooms to how they are added on the form
+      let roomOptions = {
+        "1A": "%22INB1102%20-%20Lab%201A%22",
+        "1B": "%22INB1301%20-%20Lab%201B%20(ASUS%20ROG)%22",
+        "1C": "%22INB1101%20-%20Lab%201C%22",
+        "GL": "%22INB1305%20-%20Games%20Studio%22",
+        "XR": "%22INB1304%20-%XR%20Lab%22",
+        "2A": "%22INB2101%20-%20Lab%202A%22",
+        "2B": "%22INB2102%20-%20Lab%202B%22",
+        "2C": "%22INB2305%20-%20Lab%202C%22",
+        "2D": "%22INB2304%20-%20Lab%202D%22",
+        "2E": "%22INB2306%20-%20Lab%202E%22",
+      };
+
+      // Make upper case and match the rooms to the desk code.
+      const deskId = params.desk
+        .toUpperCase()
+        .replace("-WINDOWS", "")
+        .replace("-LINUX", "");
+
+      // Get the first part of the room code in the desk code and then match it to the list of options, or just leave it blank
+      const room = roomOptions[deskId.split("-")[0]] || "";
+
+      // Build the url and redirect the user
+      const url = `https://forms.office.com/Pages/ResponsePage.aspx?id=${formId}&${deskIdField}=${deskId}&${roomField}=${room}`;
+      //console.log({ url, deskId, room });
       window.location.replace(formUrl + desk);
     </script>
   </body>
