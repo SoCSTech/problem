@@ -92,7 +92,7 @@
       };
 
       // Make upper case and match the rooms to the desk code.
-      const deskId = params.desk
+      const deskId = (params.desk || "")
         .toUpperCase()
         .replace("-WINDOWS", "")
         .replace("-LINUX", "");
